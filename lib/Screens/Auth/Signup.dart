@@ -1,5 +1,7 @@
+import 'dart:convert';
 import 'dart:io';
 import 'dart:ui';
+import 'package:exhibition/Services/Auth.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -79,6 +81,9 @@ class _SignupState extends State<Signup> {
       File? panBack,
       File? aadharFront,
       File? aadharBack) async {
+    String base64Image = base64Encode(panFront!.readAsBytesSync());
+
+    Auth.signup(panFront);
     //TODO: Signup
   }
 

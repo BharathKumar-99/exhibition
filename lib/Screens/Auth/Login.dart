@@ -2,6 +2,7 @@
 
 import 'dart:ui';
 
+import 'package:exhibition/Services/Auth.dart';
 import 'package:exhibition/Utils/Dimentions.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -19,8 +20,21 @@ class _LoginState extends State<Login> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
 
-  _login(String email, String password) {
-    //TODO: Login
+  _login(String email, String password) async {
+    print(email);
+    print(password);
+    //ToDo: remove this when relese
+
+    var response = await Auth.login(email, password);
+    if (response == "Login Matched") {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text(response.toString()),
+      ));
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text(response.toString()),
+      ));
+    }
   }
 
   _passwordtoggle() {
