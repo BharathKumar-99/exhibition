@@ -1,7 +1,5 @@
 import 'dart:convert';
 import 'dart:io';
-import 'package:path/path.dart';
-import 'package:dio/dio.dart';
 import 'package:exhibition/Utils/Connections.dart';
 import 'package:http/http.dart' as http;
 
@@ -24,32 +22,36 @@ class Auth {
   }
 
 //Signup
-  static void signup(
-    // String email,
-    // String password,
-    // String name,
-    // String phone,
-    File? panFront,
-    // File? panBack,
-    // File? aadharFront,
-    // File? aadharBack
-  ) async {
-    String fileName = basename(panFront!.path);
-    print("File base name: $fileName");
+  static signup(
+      String email,
+      String password,
+      String name,
+      String phone,
+      File? panFront,
+      File? panBack,
+      File? aadharFront,
+      File? aadharBack) async {
+//upload image to server
 
-    try {
-      String fileName = panFront.path.split('/').last;
-      FormData formData = FormData.fromMap({
-        "panfront":
-            await MultipartFile.fromFile(panFront.path, filename: fileName),
-      });
-      Response response = await Dio().post(con.registerapi, data: formData);
-      print("File upload response: $response");
+    var uri = Uri.parse(con.registerapi);
+    var request = http.MultipartRequest("POST", uri);
+    var panfront = await http.MultipartFile.fromPath('image', panFront!.path);
+    var panback = await http.MultipartFile.fromPath('image1', panBack!.path);
+    var aadharfront =
+        await http.MultipartFile.fromPath('image2', aadharFront!.path);
+    var aadharback =
+        await http.MultipartFile.fromPath('image3', aadharBack!.path);
+    request.files.add(panfront);
+    request.files.add(panback);
+    request.files.add(aadharfront);
+    request.files.add(aadharback);
+    request.fields['name'] = name;
+    request.fields['email'] = email;
+    request.fields['password'] = password;
+    request.fields['mobile'] = phone;
 
-      // Show the incoming message in snakbar
+    var response = await request.send();
 
-    } catch (e) {
-      print("Exception Caught: $e");
-    }
+    return response.stream.bytesToString();
   }
 }
