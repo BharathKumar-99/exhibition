@@ -1,4 +1,4 @@
-import 'dart:convert';
+// ignore_for_file: file_names
 
 import 'dart:io';
 import 'dart:ui';
@@ -61,9 +61,6 @@ class _SignupState extends State<Signup> {
     if (pickedFile != null) {
       _panFront = File(pickedFile.path);
       setState(() {});
-      print('_image: $_panFront');
-    } else {
-      print('No image selected');
     }
   }
 
@@ -72,9 +69,6 @@ class _SignupState extends State<Signup> {
     if (pickedFile != null) {
       _panBack = File(pickedFile.path);
       setState(() {});
-      print('_image: $_panBack');
-    } else {
-      print('No image selected');
     }
   }
 
@@ -83,9 +77,6 @@ class _SignupState extends State<Signup> {
     if (pickedFile != null) {
       _aadharFront = File(pickedFile.path);
       setState(() {});
-      print('_image: $_aadharFront');
-    } else {
-      print('No image selected');
     }
   }
 
@@ -94,9 +85,6 @@ class _SignupState extends State<Signup> {
     if (pickedFile != null) {
       _aadharBack = File(pickedFile.path);
       setState(() {});
-      print('_image: $_aadharBack');
-    } else {
-      print('No image selected');
     }
   }
 
@@ -113,23 +101,13 @@ class _SignupState extends State<Signup> {
     setState(() {
       _loading = true;
     });
-    var response = await Auth.signup(email, password, name, phone, panFront,
-        panBack, aadharFront, aadharBack);
-
-    if (response == 200) {
-      var data = json.decode(response.body);
-      print(data);
-      showDialog(
-        "Success",
-        "Signup Successful",
-      );
-      clear();
-    } else {
-      showDialog(
-        "Error",
-        "Signup Failed",
-      );
-    }
+    await Auth.signup(email, password, name, phone, panFront, panBack,
+            aadharFront, aadharBack)
+        .then((value) => {
+              setState(() {
+                _loading = false;
+              }),
+            });
   }
 
   _passwordtoggle() {
