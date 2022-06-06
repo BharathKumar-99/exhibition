@@ -6,7 +6,8 @@ class con {
   static const String loginapi = "$_host/auth/Login.php";
   static const String registerapi = "$_host/auth/Signup.php";
   static const String productcountapi = "$_host/sales/vendersales.php";
-  static const String getbarsales = "$_host/sales/barsales.php";
-  static const String getweeksales =
-      "https://flutterdemo-f6d47.firebaseio.com/chartSalesData.json";
+  static const String getweeksales = "$_host/sales/weeksales.php";
+  static const String getdaysales = "$_host/sales/daysales.php";
+  static const String getmonthsales = "$_host/sales/monthsales.php";
+  static const String getyearsales = "$_host/sales/yearsales.php";
 }

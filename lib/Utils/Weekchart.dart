@@ -1,29 +1,29 @@
 import 'dart:convert';
 
-import 'package:exhibition/Model/DaySales.dart';
+import 'package:exhibition/Model/WeekSales.dart';
 import 'package:flutter/material.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 
 import '../Services/Productapi.dart';
 
-class LineChartWidget extends StatefulWidget {
-  const LineChartWidget({
+class WeekChart extends StatefulWidget {
+  const WeekChart({
     Key? key,
   }) : super(key: key);
 
   @override
-  State<LineChartWidget> createState() => _LineChartWidgetState();
+  State<WeekChart> createState() => _WeekChartState();
 }
 
-class _LineChartWidgetState extends State<LineChartWidget> {
-  List<DaySales> chartData = [];
+class _WeekChartState extends State<WeekChart> {
+  List<Weeksales> chartData = [];
   Future loaddata() async {
     var jsonResponse;
-    await ProductApi.getdaylist().then((value) => {
+    await ProductApi.getweeklist().then((value) => {
           jsonResponse = json.decode(value),
           setState(() {
             for (Map<String, dynamic> i in jsonResponse) {
-              chartData.add(DaySales.fromJson(i));
+              chartData.add(Weeksales.fromJson(i));
             }
           })
         });
@@ -39,7 +39,7 @@ class _LineChartWidgetState extends State<LineChartWidget> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: FutureBuilder(
-        future: ProductApi.getdaylist(),
+        future: ProductApi.getweeklist(),
         builder: (context, snapshot) {
           if (snapshot.hasData) {
             return SfCartesianChart(
@@ -57,9 +57,9 @@ class _LineChartWidgetState extends State<LineChartWidget> {
                     //to hide whole axis
                     majorGridLines: const MajorGridLines(width: 0)),
                 tooltipBehavior: TooltipBehavior(enable: false),
-                title: ChartTitle(text: 'Day Sales'),
-                series: <ChartSeries<DaySales, String>>[
-                  SplineAreaSeries<DaySales, String>(
+                title: ChartTitle(text: 'Week Sales'),
+                series: <ChartSeries<Weeksales, String>>[
+                  SplineAreaSeries<Weeksales, String>(
                     markerSettings: const MarkerSettings(isVisible: true),
                     dataLabelSettings: const DataLabelSettings(
                       isVisible: true,
@@ -67,8 +67,8 @@ class _LineChartWidgetState extends State<LineChartWidget> {
                     ),
                     dataSource: chartData,
                     color: Colors.blue,
-                    xValueMapper: (DaySales sales, _) => sales.month,
-                    yValueMapper: (DaySales sales, _) => sales.sales,
+                    xValueMapper: (Weeksales sales, _) => sales.month,
+                    yValueMapper: (Weeksales sales, _) => sales.sales,
                     animationDuration: 2000,
                     animationDelay: 1000,
                   )

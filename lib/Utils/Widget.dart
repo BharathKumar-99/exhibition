@@ -1,3 +1,6 @@
+import 'package:exhibition/Utils/MonthChart.dart';
+import 'package:exhibition/Utils/Weekchart.dart';
+import 'package:exhibition/Utils/YearChart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -27,7 +30,7 @@ class _TabLayoutState extends State<TabLayout> {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       home: DefaultTabController(
-        length: 5,
+        length: 4,
         child: Scaffold(
           appBar: AppBar(
             elevation: 0,
@@ -46,7 +49,6 @@ class _TabLayoutState extends State<TabLayout> {
                 Tab(text: "1D"),
                 Tab(text: "1W"),
                 Tab(text: "1M"),
-                Tab(text: "6M"),
                 Tab(text: "1Y")
               ],
             ),
@@ -54,10 +56,9 @@ class _TabLayoutState extends State<TabLayout> {
           body: const TabBarView(
             children: [
               LineChartWidget(),
-              LineChartWidget(),
-              LineChartWidget(),
-              LineChartWidget(),
-              LineChartWidget()
+              WeekChart(),
+              MonthChart(),
+              YearChart()
             ],
           ),
         ),

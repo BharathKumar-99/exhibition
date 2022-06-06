@@ -6,8 +6,8 @@ class Weeksales {
 
   factory Weeksales.fromJson(Map<String, dynamic> parsedJson) {
     return Weeksales(
-      parsedJson['month'].toString(),
-      parsedJson['sales'],
+      parsedJson['day'].toString(),
+      parsedJson['Value'],
     );
   }
 }

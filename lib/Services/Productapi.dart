@@ -37,4 +37,19 @@ class ProductApi {
     http.Response response = await http.get(Uri.parse(con.getweeksales));
     return response.body;
   }
+
+  static Future<String> getdaylist() async {
+    http.Response response = await http.get(Uri.parse(con.getdaysales));
+    return response.body;
+  }
+
+  static Future<String> getmonthlist() async {
+    http.Response response = await http.get(Uri.parse(con.getmonthsales));
+    return response.body;
+  }
+
+  static Future<String> getyearlist() async {
+    http.Response response = await http.get(Uri.parse(con.getyearsales));
+    return response.body;
+  }
 }
