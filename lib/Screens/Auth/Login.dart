@@ -69,7 +69,7 @@ class _LoginState extends State<Login> {
                 children: [
                   Lottie.asset('assets/loading.json'),
                   Text(
-                    "Signing You Up...",
+                    "Signing You In...",
                     style: GoogleFonts.lato(
                       fontSize: 40,
                       fontWeight: FontWeight.w900,

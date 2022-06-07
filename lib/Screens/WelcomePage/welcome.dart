@@ -3,6 +3,7 @@ import 'package:exhibition/Screens/Auth/AutoLogin.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import '../Auth/Login.dart';
 import '../Home/MainScreen.dart';
 
 class Welcome extends StatefulWidget {
@@ -28,6 +29,10 @@ class _WelcomeState extends State<Welcome> {
       setState(() {
         Get.off(() => const Home());
       });
+    } else {
+      setState(() {
+        Get.off(() => const Login());
+      });
     }
   }
 
@@ -35,11 +40,9 @@ class _WelcomeState extends State<Welcome> {
   Widget build(BuildContext context) {
     return Scaffold(
         body: SafeArea(
-      child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
-        ElevatedButton(
-            onPressed: () => {Get.toNamed("/")}, child: const Text("Login")),
-        const SizedBox(height: 20),
-      ]),
+      child: Center(
+        child: Image.asset("assets/welcome.png"),
+      ),
     ));
   }
 }

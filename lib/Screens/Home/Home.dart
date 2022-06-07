@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../../Utils/Widget.dart';
+import '../Auth/AutoLogin.dart';
 
 class Dashboard extends StatefulWidget {
   const Dashboard({Key? key}) : super(key: key);
@@ -21,12 +22,21 @@ class _DashboardState extends State<Dashboard> {
   ProductModel productList = ProductModel();
 
   final String assetName = 'assets/shipment.svg';
+  var Username = "";
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
     _getproductapi();
+    _getname();
+  }
+
+  _getname() async {
+    user = await Autologin.getLogin();
+    setState(() {
+      Username = user.name!;
+    });
   }
 
   _getproductapi() async {
@@ -62,7 +72,7 @@ class _DashboardState extends State<Dashboard> {
                           fontWeight: FontWeight.bold),
                     ),
                     Text(
-                      'Welcome to the dashboard',
+                      'Welcome to the dashboard $Username',
                       style: GoogleFonts.lato(
                         fontSize: 20,
                         color: Colors.black,
