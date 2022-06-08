@@ -1,10 +1,16 @@
 import 'dart:typed_data';
 
+import 'package:exhibition/Screens/SellingPages/Cart.dart';
+import 'package:exhibition/Services/Productapi.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
+import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+
+import '../../Controller/ShoppingController.dart';
+import '../../Model/ProductM.dart';
 
 class Scan extends StatefulWidget {
   const Scan({Key? key}) : super(key: key);
@@ -14,6 +20,10 @@ class Scan extends StatefulWidget {
 }
 
 class _ScanState extends State<Scan> {
+  bool gotocart = false;
+  final cartController = Get.put(CartController());
+  Product _products = Product();
+
   void playRemoteFile() async {
     AudioPlayer player = AudioPlayer();
     String audioasset = "assets/barcode.mp3";
@@ -30,7 +40,40 @@ class _ScanState extends State<Scan> {
       barcodeScanRes = await FlutterBarcodeScanner.scanBarcode(
           '#ff6666', 'Cancel', true, ScanMode.QR);
       playRemoteFile();
-      print(barcodeScanRes);
+      ProductApi.getproduct(barcodeScanRes).then((value) => {
+            if (value != "")
+              {
+                _products = value,
+                Get.snackbar(
+                  " ",
+                  "Product Found",
+                  snackPosition: SnackPosition.BOTTOM,
+                ),
+                cartController.cartItems
+                        .where((element) => element.name == _products.name)
+                        .toList()
+                        .isEmpty
+                    ? cartController.cartItems.add(_products)
+                    : //increment the quantity of the product
+                    cartController.cartItems
+                        .where((element) => element.name == _products.name)
+                        .toList()
+                        .forEach((element) {
+                        element.quantity = element.quantity! + 1;
+                        print("object");
+                      }),
+                gotocart = true,
+              }
+            else
+              {
+                Get.snackbar(
+                  " ",
+                  "Product Not Found",
+                  icon: const Icon(Icons.person, color: Colors.white),
+                  snackPosition: SnackPosition.BOTTOM,
+                ),
+              }
+          });
     } on PlatformException {
       barcodeScanRes = 'Failed to get platform version.';
     }
@@ -70,6 +113,9 @@ class _ScanState extends State<Scan> {
             ElevatedButton(
                 onPressed: _scanBarcodeCont,
                 child: const Text("Scan Multiple")),
+            ElevatedButton(
+                onPressed: () => Get.to(() => const MyCart()),
+                child: const Text("Go To Cart"))
           ],
         ),
       ),

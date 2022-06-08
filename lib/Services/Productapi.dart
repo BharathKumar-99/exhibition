@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:exhibition/Model/ProductM.dart';
 import 'package:exhibition/Model/ProductModel.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -51,5 +52,25 @@ class ProductApi {
   static Future<String> getyearlist() async {
     http.Response response = await http.get(Uri.parse(con.getyearsales));
     return response.body;
+  }
+
+  static Future<Product> getproduct(String Barcode) async {
+    print(Barcode);
+    var product = Product();
+    http.Response response = await http.post(Uri.parse(con.getproduct), body: {
+      "name": Barcode,
+    });
+    print(response.body);
+    if (response.statusCode == 200) {
+      for (final item in jsonDecode(response.body)) {
+        product = Product.fromJson(item);
+      }
+
+      return product;
+    } else {
+      // If the server did not return a 200 OK response,
+      // then throw an exception.
+      throw Exception('Failed to load album');
+    }
   }
 }

@@ -21,11 +21,14 @@ class _LineChartWidgetState extends State<LineChartWidget> {
     var jsonResponse;
     await ProductApi.getdaylist().then((value) => {
           jsonResponse = json.decode(value),
-          setState(() {
-            for (Map<String, dynamic> i in jsonResponse) {
-              chartData.add(DaySales.fromJson(i));
+          if (mounted)
+            {
+              setState(() {
+                for (Map<String, dynamic> i in jsonResponse) {
+                  chartData.add(DaySales.fromJson(i));
+                }
+              })
             }
-          })
         });
   }
 

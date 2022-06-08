@@ -1,7 +1,7 @@
 // ignore_for_file: file_names, camel_case_types
 
 class con {
-  static const String _host = "http://jrcreations.site/exebition/Api/";
+  static const String _host = "https://jrcreations.site/exebition/Api/";
 
   static const String loginapi = "$_host/auth/Login.php";
   static const String registerapi = "$_host/auth/Signup.php";
@@ -10,4 +10,5 @@ class con {
   static const String getdaysales = "$_host/sales/daysales.php";
   static const String getmonthsales = "$_host/sales/monthsales.php";
   static const String getyearsales = "$_host/sales/yearsales.php";
+  static const String getproduct = "$_host/product/product.php";
 }
