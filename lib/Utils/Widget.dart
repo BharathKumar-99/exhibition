@@ -1,3 +1,5 @@
+// ignore_for_file: file_names, must_be_immutable, prefer_typing_uninitialized_variables
+
 import 'package:exhibition/Utils/MonthChart.dart';
 import 'package:exhibition/Utils/Weekchart.dart';
 import 'package:exhibition/Utils/YearChart.dart';
@@ -22,7 +24,6 @@ class _TabLayoutState extends State<TabLayout> {
   @override
   void initState() {
     super.initState();
-    print("object");
   }
 
   @override
@@ -71,7 +72,7 @@ class _TabLayoutState extends State<TabLayout> {
 class DetailCard extends StatelessWidget {
   String count;
   String title;
-  DetailCard(this.count, this.title);
+  DetailCard(this.count, this.title, {Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

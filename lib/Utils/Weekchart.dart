@@ -1,3 +1,5 @@
+// ignore_for_file: file_names, prefer_typing_uninitialized_variables
+
 import 'dart:convert';
 
 import 'package:exhibition/Model/WeekSales.dart';
@@ -21,11 +23,14 @@ class _WeekChartState extends State<WeekChart> {
     var jsonResponse;
     await ProductApi.getweeklist().then((value) => {
           jsonResponse = json.decode(value),
-          setState(() {
-            for (Map<String, dynamic> i in jsonResponse) {
-              chartData.add(Weeksales.fromJson(i));
+          if (mounted)
+            {
+              setState(() {
+                for (Map<String, dynamic> i in jsonResponse) {
+                  chartData.add(Weeksales.fromJson(i));
+                }
+              })
             }
-          })
         });
   }
 

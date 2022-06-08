@@ -1,3 +1,5 @@
+// ignore_for_file: file_names
+
 class ProductApiModel {
   String? status;
   List<Product>? product;
@@ -53,7 +55,7 @@ class Product {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = Map<String, dynamic>();
+    final Map<String, dynamic> data = <String, dynamic>{};
     data['id'] = id;
     data['Name'] = name;
     data['Barcode'] = barcode;

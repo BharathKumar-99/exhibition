@@ -1,3 +1,5 @@
+// ignore_for_file: file_names
+
 import 'dart:convert';
 
 import 'package:exhibition/Model/ProductM.dart';
@@ -35,42 +37,91 @@ class ProductApi {
   }
 
   static Future<String> getweeklist() async {
-    http.Response response = await http.get(Uri.parse(con.getweeksales));
-    return response.body;
+    String weeklist = "";
+    try {
+      http.Response response = await http.get(Uri.parse(con.getweeksales));
+      weeklist = response.body;
+    } catch (e) {
+      Get.snackbar(
+        "Error",
+        e.toString(),
+        icon: const Icon(Icons.person, color: Colors.white),
+        snackPosition: SnackPosition.BOTTOM,
+      );
+    }
+    return weeklist;
   }
 
   static Future<String> getdaylist() async {
-    http.Response response = await http.get(Uri.parse(con.getdaysales));
-    return response.body;
+    var responsestring = "";
+    try {
+      http.Response response = await http.get(Uri.parse(con.getdaysales));
+      responsestring = response.body;
+    } catch (e) {
+      Get.snackbar(
+        "Error",
+        e.toString(),
+        icon: const Icon(Icons.person, color: Colors.white),
+        snackPosition: SnackPosition.BOTTOM,
+      );
+    }
+    return responsestring;
   }
 
   static Future<String> getmonthlist() async {
-    http.Response response = await http.get(Uri.parse(con.getmonthsales));
-    return response.body;
+    var responsestring = "";
+    try {
+      http.Response response = await http.get(Uri.parse(con.getmonthsales));
+      responsestring = response.body;
+    } catch (e) {
+      Get.snackbar(
+        "Error",
+        e.toString(),
+        icon: const Icon(Icons.person, color: Colors.white),
+        snackPosition: SnackPosition.BOTTOM,
+      );
+    }
+    return responsestring;
   }
 
   static Future<String> getyearlist() async {
-    http.Response response = await http.get(Uri.parse(con.getyearsales));
-    return response.body;
+    var responsestring = "";
+    try {
+      http.Response response = await http.get(Uri.parse(con.getyearsales));
+      responsestring = response.body;
+    } catch (e) {
+      Get.snackbar(
+        "Error",
+        e.toString(),
+        icon: const Icon(Icons.person, color: Colors.white),
+        snackPosition: SnackPosition.BOTTOM,
+      );
+    }
+    return responsestring;
   }
 
-  static Future<Product> getproduct(String Barcode) async {
-    print(Barcode);
+  static Future<Product?> getproduct(String barcode) async {
     var product = Product();
     http.Response response = await http.post(Uri.parse(con.getproduct), body: {
-      "name": Barcode,
+      "name": barcode,
     });
-    print(response.body);
+
     if (response.statusCode == 200) {
       for (final item in jsonDecode(response.body)) {
         product = Product.fromJson(item);
       }
-
+      if (product.name == null) {
+        return null;
+      }
       return product;
     } else {
-      // If the server did not return a 200 OK response,
-      // then throw an exception.
-      throw Exception('Failed to load album');
+      Get.snackbar(
+        "Error",
+        "product not found",
+        icon: const Icon(Icons.person, color: Colors.white),
+        snackPosition: SnackPosition.BOTTOM,
+      );
     }
+    return null;
   }
 }

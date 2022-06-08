@@ -47,6 +47,7 @@ dependencies:
   audioplayers: ^0.20.1
   week_of_year: ^2.0.0
   fl_chart: ^0.51.0
+  permission_handler: ^9.2.0
 
 dev_dependencies:
   flutter_lints: ^2.0.0

@@ -1,3 +1,5 @@
+// ignore_for_file: file_names
+
 import 'package:exhibition/Model/ProductModel.dart';
 import 'package:exhibition/Model/response.dart';
 import 'package:exhibition/Services/Productapi.dart';
@@ -22,11 +24,10 @@ class _DashboardState extends State<Dashboard> {
   ProductModel productList = ProductModel();
 
   final String assetName = 'assets/shipment.svg';
-  var Username = "";
+  var username = "";
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     _getproductapi();
     _getname();
@@ -35,7 +36,7 @@ class _DashboardState extends State<Dashboard> {
   _getname() async {
     user = await Autologin.getLogin();
     setState(() {
-      Username = user.name!;
+      username = user.name!;
     });
   }
 
@@ -72,7 +73,7 @@ class _DashboardState extends State<Dashboard> {
                           fontWeight: FontWeight.bold),
                     ),
                     Text(
-                      'Welcome to the dashboard $Username',
+                      'Welcome to the dashboard $username',
                       style: GoogleFonts.lato(
                         fontSize: 20,
                         color: Colors.black,

@@ -1,3 +1,5 @@
+// ignore_for_file: file_names
+
 class MonthSales {
   MonthSales(this.month, this.sales);
 
