@@ -2,33 +2,51 @@
 
 import 'dart:convert';
 import 'dart:io';
+import 'package:exhibition/Model/Signupmodel.dart';
+import 'package:exhibition/Model/UPlaodDocResmodel.dart';
 import 'package:exhibition/Model/response.dart';
-import 'package:exhibition/Screens/Auth/Login.dart';
+import 'package:exhibition/Screens/Auth/AutoLogin.dart';
 import 'package:exhibition/Utils/Connections.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:dio/dio.dart';
+import 'package:dio/dio.dart' as mio;
 import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
 
 class Auth {
   static var client = http.Client();
+  static var dio = Dio();
 
 //Login
-  static Future<ResponseModel>? login(String email, String password) async {
+  static Future<String>? login(String email, String password) async {
     var data = {'email': email, 'password': password};
     ResponseModel result = ResponseModel();
-
+    var usersDataFromJson;
+    String response = " ";
     try {
-      await client
-          .post(Uri.parse(con.loginapi), body: json.encode(data))
-          .then((value) => {
-                if (value.statusCode == 200)
+      await client.post(Uri.parse(con.loginapi), body: data).then((value) => {
+            print(value.body),
+            if (value.statusCode == 200)
+              {
+                if (value.body == "Document upload Pending")
+                  {response = "doc pending"}
+                else
                   {
                     result = ResponseModel.fromJson(json.decode(value.body)),
+                    if (result.email == email)
+                      {
+                        print(result.email),
+                        response = "success",
+                        Autologin.setLogin(result),
+                      }
                   }
-                else
-                  {result = ResponseModel()}
-              });
+              }
+            else
+              {response = "failure"}
+          });
     } catch (e) {
+      print(e.toString());
       Get.snackbar(
         "Error",
         e.toString(),
@@ -36,58 +54,167 @@ class Auth {
         snackPosition: SnackPosition.BOTTOM,
       );
     }
-    return result;
+    return response;
   }
 
 //Signup
   static Future<String> signup(
-      String email,
-      String password,
-      String name,
-      String phone,
-      File? panFront,
-      File? panBack,
-      File? aadharFront,
-      File? aadharBack) async {
-//upload image to server
+    String email,
+    String password,
+    String name,
+    String phone,
+  ) async {
+    var data = {
+      'email': email,
+      'password': password,
+      'name': name,
+      'phone': phone,
+      "pan_front": "not uploaded",
+      "pan_back": "not uploaded",
+      "aadhar_front": "not uploaded",
+      "aadhar_back": "not uploaded",
+    };
+
     String result = "";
-    var uri = Uri.parse(con.registerapi);
+    SignupResponse res = SignupResponse();
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    try {
+      await http
+          .post(Uri.parse(con.registerapi),
+              headers: {"Content-Type": "application/json"},
+              body: json.encode(data))
+          .then((value) => {
+                print(value.statusCode),
+                print(value.body),
+                if (value.statusCode == 200)
+                  {
+                    res = SignupResponse.fromJson(json.decode(value.body)),
+                    print(res.message),
+                    if (res.message == "Registration Successful!")
+                      {
+                        result = "Registration Successful!",
+                        //update shared prefrence
+                        prefs.setString('id', res.id.toString()),
+
+                        prefs.setString('emailsignup', email),
+                      }
+                    else if (res.message == "Document upload Pending")
+                      {
+                        result = "Document upload Pending",
+                        prefs.setString('id', res.id.toString()),
+                        prefs.setString('emailsignup', email),
+                      }
+                    else
+                      {result = res.message.toString()}
+                  }
+              });
+    } catch (e) {
+      print(e);
+    }
+    return result;
+  }
+
+  static Future<String> uploadDocuments(
+    File? panFront,
+    File? panBack,
+    File? aadharFront,
+    File? aadharBack,
+  ) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String result = "";
+
+    var id = prefs.getString('emailsignup');
+    var uri = Uri.parse(con.uploadDocument);
     var request = http.MultipartRequest("POST", uri);
-    var panfront = await http.MultipartFile.fromPath('image', panFront!.path);
-    var panback = await http.MultipartFile.fromPath('image1', panBack!.path);
+    var panfront =
+        await http.MultipartFile.fromPath('pan_front', panFront!.path);
+    var panback = await http.MultipartFile.fromPath('pan_back', panBack!.path);
     var aadharfront =
-        await http.MultipartFile.fromPath('image2', aadharFront!.path);
+        await http.MultipartFile.fromPath('aadhar_front', aadharFront!.path);
     var aadharback =
-        await http.MultipartFile.fromPath('image3', aadharBack!.path);
+        await http.MultipartFile.fromPath('aadhar_back', aadharBack!.path);
     request.files.add(panfront);
     request.files.add(panback);
     request.files.add(aadharfront);
     request.files.add(aadharback);
-    request.fields['name'] = name;
-    request.fields['email'] = email;
-    request.fields['password'] = password;
-    request.fields['mobile'] = phone;
-
-    await request.send().then((response) {
-      http.Response.fromStream(response).then((onValue) {
-        try {
-          if (json.decode(onValue.body) == "User Registered Successfully") {
-            Get.off(const Login());
-          } else {
-            Get.defaultDialog(
-                title: "Error",
-                middleText: onValue.body,
-                backgroundColor: Colors.blueAccent,
-                titleStyle: const TextStyle(color: Colors.white),
-                middleTextStyle: const TextStyle(color: Colors.white),
-                radius: 30);
-          }
-        } catch (e) {
-          result = onValue.body;
-          return result;
-        }
-      });
+    var formData = mio.FormData.fromMap({
+      'pan_front': await mio.MultipartFile.fromFile(panFront.path,
+          filename: panFront.path),
+      'pan_back': await mio.MultipartFile.fromFile(panBack.path,
+          filename: panBack.path),
+      'aadhar_front': await mio.MultipartFile.fromFile(aadharFront.path,
+          filename: aadharFront.path),
+      'aadhar_back': await mio.MultipartFile.fromFile(aadharBack.path,
+          filename: aadharBack.path),
     });
-    return "result";
+
+    Upload_Document_result res = Upload_Document_result();
+    try {
+      var response =
+          await dio.post(con.uploadDocument, data: formData).then((value) => {
+                if (value.statusCode == 200)
+                  {
+                    res = Upload_Document_result.fromJson(
+                        json.decode(value.data)),
+                    if (res.message == "Document Uploaded Successfully!")
+                      {
+                        result = "Document Uploaded Successfully!",
+                        print(result),
+                      }
+                    else
+                      {result = res.message.toString(), print(result)},
+                  }
+              });
+    } catch (e) {
+      result = "Error";
+      print(e.toString());
+    }
+    var update = updatedoc(
+        res.aadharBack.toString(),
+        res.aadharFront.toString(),
+        res.panBack.toString(),
+        res.panFront.toString());
+    if (update == "Updated") {
+      result = "Document Uploaded Successfully!";
+    } else {
+      result = "Error";
+    }
+    return result;
+  }
+
+  static Future<String> updatedoc(
+    String panFront,
+    String panBack,
+    String aadharFront,
+    String aadharBack,
+  ) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String result = "";
+    print("object ");
+    var id = prefs.getString('emailsignup');
+    var uri = Uri.parse(con.uploadDocumentDetails);
+    var data = {
+      "email": id,
+      "pan_front": panFront,
+      "pan_back": panBack,
+      "aadhar_front": aadharFront,
+      "aadhar_back": aadharBack,
+    };
+    http.post(uri, body: data).then((value) => {
+          if (value.statusCode == 200)
+            {
+              if (value.body == "Updated")
+                {result = "Updated"}
+              else
+                {result = "Error"}
+            }
+          else
+            {
+              result = "Error",
+              print(result),
+            },
+        });
+
+    return result;
   }
 }

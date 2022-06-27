@@ -1,15 +1,14 @@
 // ignore_for_file: file_names
 
-import 'dart:io';
 import 'dart:ui';
 import 'package:exhibition/Services/Auth.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lottie/lottie.dart';
 
 import '../../Utils/Dimentions.dart';
+import 'Documnet_upload.dart';
 
 class Signup extends StatefulWidget {
   const Signup({Key? key}) : super(key: key);
@@ -27,20 +26,16 @@ class _SignupState extends State<Signup> {
   final _nameController = TextEditingController();
   final _phoneController = TextEditingController();
 
-  File? _panFront, _panBack, _aadharFront, _aadharBack;
-
-  final picker = ImagePicker();
-
   clear() {
     _emailController.text = "";
     _passwordController.text = "";
     _nameController.text = "";
     _phoneController.text = "";
-    _panFront = null;
-    _panBack = null;
-    _aadharFront = null;
-    _aadharBack = null;
+
     _confirmPasswordController.text = "";
+    setState(() {
+      _loading = false;
+    });
   }
 
   showDialog(
@@ -56,58 +51,38 @@ class _SignupState extends State<Signup> {
         radius: 30);
   }
 
-  Future _panFrontPicker() async {
-    final pickedFile = await picker.pickImage(source: ImageSource.camera);
-    if (pickedFile != null) {
-      _panFront = File(pickedFile.path);
-      setState(() {});
-    }
-  }
-
-  Future _panBackPicker() async {
-    final pickedFile = await picker.pickImage(source: ImageSource.camera);
-    if (pickedFile != null) {
-      _panBack = File(pickedFile.path);
-      setState(() {});
-    }
-  }
-
-  Future _aadharFrontPicker() async {
-    final pickedFile = await picker.pickImage(source: ImageSource.camera);
-    if (pickedFile != null) {
-      _aadharFront = File(pickedFile.path);
-      setState(() {});
-    }
-  }
-
-  Future _aadharBackPicker() async {
-    final pickedFile = await picker.pickImage(source: ImageSource.camera);
-    if (pickedFile != null) {
-      _aadharBack = File(pickedFile.path);
-      setState(() {});
-    }
-  }
-
   _signup(
-      String email,
-      String password,
-      String name,
-      String phone,
-      File? panFront,
-      File? panBack,
-      File? aadharFront,
-      File? aadharBack) async {
+    String email,
+    String password,
+    String name,
+    String phone,
+  ) async {
     //non cancel circular progress indicator
     setState(() {
       _loading = true;
     });
-    await Auth.signup(email, password, name, phone, panFront, panBack,
-            aadharFront, aadharBack)
-        .then((value) => {
-              setState(() {
-                _loading = false;
-              }),
-            });
+    await Auth.signup(email, password, name, phone).then((value) => {
+          if (value == "Registration Successful!")
+            {
+              Get.to(() => const DocumentUpload()),
+              clear(),
+            }
+          else if (value == "Document upload Pending")
+            {
+              showDialog(
+                "Error",
+                "$value Upload It First",
+              ),
+              clear(),
+            }
+          else
+            {
+              showDialog(
+                "Error",
+                value,
+              ),
+            }
+        });
   }
 
   _passwordtoggle() {
@@ -142,24 +117,28 @@ class _SignupState extends State<Signup> {
               physics: const BouncingScrollPhysics(),
               child: Column(
                 children: [
+                  SizedBox(height: Dimentions.height10),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Row(
                         children: [
                           IconButton(
-                            icon: const Icon(Icons.arrow_back_ios_new),
+                            icon: const Icon(
+                              Icons.arrow_back_ios_new,
+                              size: 20,
+                            ),
                             onPressed: () => Navigator.pop(context),
                           ),
                           const Text(
                             'Back',
                             style: TextStyle(
-                                fontSize: 24, fontWeight: FontWeight.bold),
+                                fontSize: 20, fontWeight: FontWeight.bold),
                           ),
                         ],
                       ),
                       ImageFiltered(
-                        imageFilter: ImageFilter.blur(sigmaX: 50, sigmaY: 50),
+                        imageFilter: ImageFilter.blur(sigmaX: 100, sigmaY: 100),
                         child: Container(
                           height: Dimentions.height100,
                           width: Dimentions.width100,
@@ -250,8 +229,6 @@ class _SignupState extends State<Signup> {
                             ),
                           ),
                         ),
-
-                        //TextField Confirm Password
 
                         SizedBox(height: Dimentions.height10),
                         Align(
@@ -350,328 +327,6 @@ class _SignupState extends State<Signup> {
                         ),
                         SizedBox(height: Dimentions.height10),
 
-                        /*
-Uplaod Image
-                   
-
-                  */
-                        Align(
-                          alignment: Alignment.center,
-                          child: Text(
-                            "Upload Document",
-                            textAlign: TextAlign.center,
-                            style: GoogleFonts.libreFranklin(
-                                fontSize: 15,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.grey),
-                          ),
-                        ),
-                        SizedBox(height: Dimentions.height10),
-                        Align(
-                          alignment: Alignment.topLeft,
-                          child: Text(
-                            "Pan Card",
-                            textAlign: TextAlign.center,
-                            style: GoogleFonts.libreFranklin(
-                                fontSize: 15,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.grey),
-                          ),
-                        ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceAround,
-                          children: [
-                            SizedBox(
-                              height: Dimentions.height150,
-                              width: Dimentions.width150,
-                              child: Container(
-                                decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(20),
-                                    border: Border.all(color: Colors.grey)),
-                                child: Column(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Container(
-                                      height: Dimentions.height105,
-                                      width: Dimentions.width45percent,
-                                      decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(20),
-                                      ),
-                                      child: _panFront == null
-                                          ? const Center(
-                                              child: Icon(
-                                                Icons.add_a_photo,
-                                                size: 45,
-                                                color: Colors.blueAccent,
-                                              ),
-                                            )
-                                          : Padding(
-                                              padding:
-                                                  const EdgeInsets.all(8.0),
-                                              child: Image.file(
-                                                _panFront!,
-                                                fit: BoxFit.fill,
-                                              ),
-                                            ),
-                                    ),
-                                    SizedBox(
-                                      width: Dimentions.width150,
-                                      child: ElevatedButton(
-                                          onPressed: () => _panFrontPicker(),
-                                          style: ButtonStyle(
-                                            backgroundColor:
-                                                MaterialStateProperty.all(
-                                                    Colors.white),
-                                            shape: MaterialStateProperty.all<
-                                                RoundedRectangleBorder>(
-                                              RoundedRectangleBorder(
-                                                borderRadius:
-                                                    BorderRadius.circular(20.0),
-                                                side: const BorderSide(
-                                                  color: Colors.transparent,
-                                                  width: 2.0,
-                                                ),
-                                              ),
-                                            ),
-                                            elevation:
-                                                MaterialStateProperty.all(0.0),
-                                          ),
-                                          child: Text(
-                                            "Upload Front",
-                                            style: GoogleFonts.libreFranklin(
-                                                fontSize: 15,
-                                                fontWeight: FontWeight.bold,
-                                                color: Colors.black),
-                                          )),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ),
-                            SizedBox(
-                              height: Dimentions.height150,
-                              width: Dimentions.width150,
-                              child: Container(
-                                decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(20),
-                                    border: Border.all(color: Colors.grey)),
-                                child: Column(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Container(
-                                      height: Dimentions.height105,
-                                      width: Dimentions.width45percent,
-                                      decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(20),
-                                      ),
-                                      child: _panBack == null
-                                          ? const Center(
-                                              child: Icon(
-                                                Icons.add_a_photo,
-                                                size: 45,
-                                                color: Colors.blueAccent,
-                                              ),
-                                            )
-                                          : Padding(
-                                              padding:
-                                                  const EdgeInsets.all(8.0),
-                                              child: Image.file(
-                                                _panBack!,
-                                                fit: BoxFit.fill,
-                                              ),
-                                            ),
-                                    ),
-                                    SizedBox(
-                                      width: Dimentions.width150,
-                                      child: ElevatedButton(
-                                          onPressed: () => _panBackPicker(),
-                                          style: ButtonStyle(
-                                            backgroundColor:
-                                                MaterialStateProperty.all(
-                                                    Colors.white),
-                                            shape: MaterialStateProperty.all<
-                                                RoundedRectangleBorder>(
-                                              RoundedRectangleBorder(
-                                                borderRadius:
-                                                    BorderRadius.circular(20.0),
-                                                side: const BorderSide(
-                                                  color: Colors.transparent,
-                                                  width: 2.0,
-                                                ),
-                                              ),
-                                            ),
-                                            elevation:
-                                                MaterialStateProperty.all(0.0),
-                                          ),
-                                          child: Text(
-                                            "Upload Back",
-                                            style: GoogleFonts.libreFranklin(
-                                                fontSize: 15,
-                                                fontWeight: FontWeight.bold,
-                                                color: Colors.black),
-                                          )),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                        SizedBox(height: Dimentions.height10),
-                        Align(
-                          alignment: Alignment.topLeft,
-                          child: Text(
-                            "Adhar Card",
-                            textAlign: TextAlign.center,
-                            style: GoogleFonts.libreFranklin(
-                                fontSize: 15,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.grey),
-                          ),
-                        ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceAround,
-                          children: [
-                            SizedBox(
-                              height: Dimentions.height150,
-                              width: Dimentions.width150,
-                              child: Container(
-                                decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(20),
-                                    border: Border.all(color: Colors.grey)),
-                                child: Column(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Container(
-                                      height: Dimentions.height105,
-                                      width: Dimentions.width45percent,
-                                      decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(20),
-                                      ),
-                                      child: _aadharFront == null
-                                          ? const Center(
-                                              child: Icon(
-                                                Icons.add_a_photo,
-                                                size: 45,
-                                                color: Colors.blueAccent,
-                                              ),
-                                            )
-                                          : Padding(
-                                              padding:
-                                                  const EdgeInsets.all(8.0),
-                                              child: Image.file(
-                                                _aadharFront!,
-                                                fit: BoxFit.fill,
-                                              ),
-                                            ),
-                                    ),
-                                    SizedBox(
-                                      width: Dimentions.width150,
-                                      child: ElevatedButton(
-                                          onPressed: () => _aadharFrontPicker(),
-                                          style: ButtonStyle(
-                                            backgroundColor:
-                                                MaterialStateProperty.all(
-                                                    Colors.white),
-                                            shape: MaterialStateProperty.all<
-                                                RoundedRectangleBorder>(
-                                              RoundedRectangleBorder(
-                                                borderRadius:
-                                                    BorderRadius.circular(20.0),
-                                                side: const BorderSide(
-                                                  color: Colors.transparent,
-                                                  width: 2.0,
-                                                ),
-                                              ),
-                                            ),
-                                            elevation:
-                                                MaterialStateProperty.all(0.0),
-                                          ),
-                                          child: Text(
-                                            "Upload Front",
-                                            style: GoogleFonts.libreFranklin(
-                                                fontSize: 15,
-                                                fontWeight: FontWeight.bold,
-                                                color: Colors.black),
-                                          )),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ),
-                            SizedBox(
-                              height: Dimentions.height150,
-                              width: Dimentions.width150,
-                              child: Container(
-                                decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(20),
-                                    border: Border.all(color: Colors.grey)),
-                                child: Column(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Container(
-                                      height: Dimentions.height105,
-                                      width: Dimentions.width45percent,
-                                      decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(20),
-                                      ),
-                                      child: _aadharBack == null
-                                          ? const Center(
-                                              child: Icon(
-                                                Icons.add_a_photo,
-                                                size: 45,
-                                                color: Colors.blueAccent,
-                                              ),
-                                            )
-                                          : Padding(
-                                              padding:
-                                                  const EdgeInsets.all(8.0),
-                                              child: Image.file(
-                                                _aadharBack!,
-                                                fit: BoxFit.fill,
-                                              ),
-                                            ),
-                                    ),
-                                    SizedBox(
-                                      width: Dimentions.width150,
-                                      child: ElevatedButton(
-                                          onPressed: () => _aadharBackPicker(),
-                                          style: ButtonStyle(
-                                            backgroundColor:
-                                                MaterialStateProperty.all(
-                                                    Colors.white),
-                                            shape: MaterialStateProperty.all<
-                                                RoundedRectangleBorder>(
-                                              RoundedRectangleBorder(
-                                                borderRadius:
-                                                    BorderRadius.circular(20.0),
-                                                side: const BorderSide(
-                                                  color: Colors.transparent,
-                                                  width: 2.0,
-                                                ),
-                                              ),
-                                            ),
-                                            elevation:
-                                                MaterialStateProperty.all(0.0),
-                                          ),
-                                          child: Text(
-                                            "Upload Back",
-                                            style: GoogleFonts.libreFranklin(
-                                                fontSize: 15,
-                                                fontWeight: FontWeight.bold,
-                                                color: Colors.black),
-                                          )),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
                         SizedBox(height: Dimentions.height20),
                         SizedBox(
                           width: double.infinity,
@@ -687,10 +342,7 @@ Uplaod Image
                                       _passwordController.text,
                                       _nameController.text,
                                       _phoneController.text,
-                                      _panFront,
-                                      _panBack,
-                                      _aadharFront,
-                                      _aadharBack)
+                                    )
                                   : showDialog(
                                       "Error",
                                       "Password and Confirm Password does not match",

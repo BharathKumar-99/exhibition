@@ -19,6 +19,7 @@ class YearChart extends StatefulWidget {
 
 class _YearChartState extends State<YearChart> {
   List<YearSales> chartData = [];
+  var loaddaydata;
   Future loaddata() async {
     var jsonResponse;
     await ProductApi.getyearlist().then((value) => {
@@ -32,19 +33,20 @@ class _YearChartState extends State<YearChart> {
               })
             }
         });
+    return chartData;
   }
 
   @override
   void initState() {
     super.initState();
-    loaddata();
+    loaddaydata = loaddata();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: FutureBuilder(
-        future: ProductApi.getyearlist(),
+        future: loaddaydata,
         builder: (context, snapshot) {
           if (snapshot.hasData) {
             return SfCartesianChart(
@@ -75,7 +77,6 @@ class _YearChartState extends State<YearChart> {
                     xValueMapper: (YearSales sales, _) => sales.month,
                     yValueMapper: (YearSales sales, _) => sales.sales,
                     animationDuration: 2000,
-                    animationDelay: 1000,
                   )
                 ]);
           } else {

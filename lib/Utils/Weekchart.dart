@@ -19,6 +19,7 @@ class WeekChart extends StatefulWidget {
 
 class _WeekChartState extends State<WeekChart> {
   List<Weeksales> chartData = [];
+  var loaddaydata;
   Future loaddata() async {
     var jsonResponse;
     await ProductApi.getweeklist().then((value) => {
@@ -32,19 +33,20 @@ class _WeekChartState extends State<WeekChart> {
               })
             }
         });
+    return chartData;
   }
 
   @override
   void initState() {
     super.initState();
-    loaddata();
+    loaddaydata = loaddata();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: FutureBuilder(
-        future: ProductApi.getweeklist(),
+        future: loaddaydata,
         builder: (context, snapshot) {
           if (snapshot.hasData) {
             return SfCartesianChart(
@@ -75,7 +77,6 @@ class _WeekChartState extends State<WeekChart> {
                     xValueMapper: (Weeksales sales, _) => sales.month,
                     yValueMapper: (Weeksales sales, _) => sales.sales,
                     animationDuration: 2000,
-                    animationDelay: 1000,
                   )
                 ]);
           } else {

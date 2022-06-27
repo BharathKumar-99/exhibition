@@ -1,11 +1,11 @@
 // ignore_for_file: file_names
 
-import 'package:exhibition/Model/ProductModel.dart';
 import 'package:exhibition/Model/response.dart';
 import 'package:exhibition/Services/Productapi.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+import '../../Model/ProductStockModel.dart';
 import '../../Utils/Widget.dart';
 import '../Auth/AutoLogin.dart';
 
@@ -19,9 +19,9 @@ class Dashboard extends StatefulWidget {
 class _DashboardState extends State<Dashboard> {
   ResponseModel user = ResponseModel();
   bool _isLoading = false;
-  var _productout = "0";
-  var _productin = "0";
-  ProductModel productList = ProductModel();
+  var _productout = "N/A";
+  var _productin = "N/A";
+  ProductStockModel productList = ProductStockModel();
 
   final String assetName = 'assets/shipment.svg';
   var username = "";
@@ -43,12 +43,18 @@ class _DashboardState extends State<Dashboard> {
   _getproductapi() async {
     _isLoading = true;
     await ProductApi.getProductList().then((value) => {
-          setState(() {
-            _productout = value!.productout!;
-            _productin = value.productin!;
-            _isLoading = false;
-            productList = value;
-          })
+          if (value != null)
+            {
+              if (mounted)
+                {
+                  setState(() {
+                    _productout = value.productout.toString();
+                    _productin = value.productin.toString();
+                    _isLoading = false;
+                    productList = value;
+                  })
+                }
+            }
         });
   }
 

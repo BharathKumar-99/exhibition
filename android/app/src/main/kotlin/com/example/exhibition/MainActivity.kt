@@ -1,4 +1,4 @@
-package com.example.exhibition
+package com.jrcreations.exhibition
 
 import io.flutter.embedding.android.FlutterActivity
 

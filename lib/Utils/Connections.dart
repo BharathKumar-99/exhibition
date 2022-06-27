@@ -1,14 +1,20 @@
 // ignore_for_file: file_names, camel_case_types
 
 class con {
-  static const String _host = "https://jrcreations.site/exebition/Api/";
+  static const String _host = "http://167.235.74.243:5000";
 
-  static const String loginapi = "$_host/auth/Login.php";
-  static const String registerapi = "$_host/auth/Signup.php";
-  static const String productcountapi = "$_host/sales/vendersales.php";
-  static const String getweeksales = "$_host/sales/weeksales.php";
-  static const String getdaysales = "$_host/sales/daysales.php";
-  static const String getmonthsales = "$_host/sales/monthsales.php";
-  static const String getyearsales = "$_host/sales/yearsales.php";
-  static const String getproduct = "$_host/product/product.php";
+  static const String loginapi = "$_host/login";
+  static const String registerapi = "$_host/register";
+  static const String uploadDocument = "$_host/uploadDocument";
+  static const String uploadDocumentDetails = "$_host/updatedocuments";
+//home
+  static const String productcountapi = "$_host/api/dailystock";
+//get bar sales
+  static const String getweeksales = "$_host/api/getweekbar";
+  static const String getdaysales = "$_host/api/getdaybar";
+  static const String getmonthsales = "$_host/api/getmonthbar";
+  static const String getyearsales = "$_host/api//getyearbar";
+
+  static const String getproduct = "$_host/product/getproduct";
+  static const String sellproduct = "$_host/product/sellproduct";
 }

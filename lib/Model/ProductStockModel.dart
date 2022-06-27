@@ -1,4 +1,4 @@
-class ResponseModel {
+class ProductStockModel {
   String? sId;
   String? name;
   String? email;
@@ -8,8 +8,11 @@ class ResponseModel {
   String? panBack;
   String? aadharFront;
   String? aadharBack;
+  String? status;
+  int? productin;
+  int? productout;
 
-  ResponseModel(
+  ProductStockModel(
       {this.sId,
       this.name,
       this.email,
@@ -18,9 +21,12 @@ class ResponseModel {
       this.panFront,
       this.panBack,
       this.aadharFront,
-      this.aadharBack});
+      this.aadharBack,
+      this.status,
+      this.productin,
+      this.productout});
 
-  ResponseModel.fromJson(Map<String, dynamic> json) {
+  ProductStockModel.fromJson(Map<String, dynamic> json) {
     sId = json['_id'];
     name = json['name'];
     email = json['email'];
@@ -30,6 +36,9 @@ class ResponseModel {
     panBack = json['pan_back'];
     aadharFront = json['aadhar_front'];
     aadharBack = json['aadhar_back'];
+    status = json['status'];
+    productin = json['productin'];
+    productout = json['productout'];
   }
 
   Map<String, dynamic> toJson() {
@@ -43,6 +52,9 @@ class ResponseModel {
     data['pan_back'] = panBack;
     data['aadhar_front'] = aadharFront;
     data['aadhar_back'] = aadharBack;
+    data['status'] = status;
+    data['productin'] = productin;
+    data['productout'] = productout;
     return data;
   }
 }

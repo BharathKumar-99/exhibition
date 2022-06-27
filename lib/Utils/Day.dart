@@ -19,6 +19,7 @@ class LineChartWidget extends StatefulWidget {
 
 class _LineChartWidgetState extends State<LineChartWidget> {
   List<DaySales> chartData = [];
+  var loaddaydata;
   Future loaddata() async {
     var jsonResponse;
     await ProductApi.getdaylist().then((value) => {
@@ -32,19 +33,20 @@ class _LineChartWidgetState extends State<LineChartWidget> {
               })
             }
         });
+    return chartData;
   }
 
   @override
   void initState() {
     super.initState();
-    loaddata();
+    loaddaydata = loaddata();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: FutureBuilder(
-        future: ProductApi.getdaylist(),
+        future: loaddaydata,
         builder: (context, snapshot) {
           if (snapshot.hasData) {
             return SfCartesianChart(
@@ -75,7 +77,6 @@ class _LineChartWidgetState extends State<LineChartWidget> {
                     xValueMapper: (DaySales sales, _) => sales.month,
                     yValueMapper: (DaySales sales, _) => sales.sales,
                     animationDuration: 2000,
-                    animationDelay: 1000,
                   )
                 ]);
           } else {

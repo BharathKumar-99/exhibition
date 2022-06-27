@@ -59,6 +59,36 @@ class Dimentions {
   static var height150 = height / 5.66;
   static var width150 = width / 2.61;
 
+  static var height160 = height / 5.27;
+  static var width160 = width / 2.5;
+
+  static var height170 = height / 4.9;
+  static var width170 = width / 2.4;
+
+  static var height180 = height / 4.55;
+  static var width180 = width / 2.3;
+
+  static var height190 = height / 4.2;
+  static var width190 = width / 2.2;
+
+  static var height200 = height / 4.17;
+  static var width200 = width / 2.1;
+
+  static var height210 = height / 3.97;
+  static var width210 = width / 1.87;
+
+  static var height220 = height / 3.79;
+  static var width220 = width / 1.78;
+
+  static var height230 = height / 3.63;
+  static var width230 = width / 1.70;
+
+  static var height240 = height / 3.47;
+  static var width240 = width / 1.63;
+
+  static var height250 = height / 3.33;
+  static var width250 = width / 1.57;
+
   static var width45percent = width * 0.45;
   static var width60percent = width * 0.6;
   static var width80percent = width * 0.8;

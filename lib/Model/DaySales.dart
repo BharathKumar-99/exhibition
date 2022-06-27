@@ -8,7 +8,7 @@ class DaySales {
 
   factory DaySales.fromJson(Map<String, dynamic> parsedJson) {
     return DaySales(
-      parsedJson['Time'].toString(),
+      parsedJson['time'].toString(),
       parsedJson['Value'],
     );
   }

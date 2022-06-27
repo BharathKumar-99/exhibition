@@ -1,31 +1,19 @@
-class ResponseModel {
-  String? sId;
-  String? name;
-  String? email;
-  String? password;
-  String? phone;
+class Upload_Document_result {
+  String? message;
   String? panFront;
   String? panBack;
   String? aadharFront;
   String? aadharBack;
 
-  ResponseModel(
-      {this.sId,
-      this.name,
-      this.email,
-      this.password,
-      this.phone,
+  Upload_Document_result(
+      {this.message,
       this.panFront,
       this.panBack,
       this.aadharFront,
       this.aadharBack});
 
-  ResponseModel.fromJson(Map<String, dynamic> json) {
-    sId = json['_id'];
-    name = json['name'];
-    email = json['email'];
-    password = json['password'];
-    phone = json['phone'];
+  Upload_Document_result.fromJson(Map<String, dynamic> json) {
+    message = json['message'];
     panFront = json['pan_front'];
     panBack = json['pan_back'];
     aadharFront = json['aadhar_front'];
@@ -34,11 +22,7 @@ class ResponseModel {
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = <String, dynamic>{};
-    data['_id'] = sId;
-    data['name'] = name;
-    data['email'] = email;
-    data['password'] = password;
-    data['phone'] = phone;
+    data['message'] = message;
     data['pan_front'] = panFront;
     data['pan_back'] = panBack;
     data['aadhar_front'] = aadharFront;
