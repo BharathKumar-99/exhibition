@@ -1,5 +1,7 @@
 // ignore_for_file: file_names
 
+import 'package:exhibition/Controller/ordercontroller.dart';
+import 'package:exhibition/Screens/Home/orders.dart';
 import 'package:flutter/material.dart';
 
 import 'Home.dart';
@@ -17,6 +19,7 @@ class _HomeState extends State<Home> {
   static final List<Widget> _widgetOptions = <Widget>[
     const Dashboard(),
     const Scan(),
+    const Orders(),
   ];
 
   void _onItemTapped(int index) {
@@ -40,6 +43,10 @@ class _HomeState extends State<Home> {
             BottomNavigationBarItem(
                 icon: const Icon(Icons.qr_code_scanner),
                 label: "scan",
+                backgroundColor: Theme.of(context).primaryColor),
+            BottomNavigationBarItem(
+                icon: const Icon(Icons.shop),
+                label: "Order",
                 backgroundColor: Theme.of(context).primaryColor),
           ],
           type: BottomNavigationBarType.shifting,

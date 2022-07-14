@@ -26,17 +26,17 @@ class Auth {
     String response = " ";
     try {
       await client.post(Uri.parse(con.loginapi), body: data).then((value) => {
-            print(value.body),
             if (value.statusCode == 200)
               {
                 if (value.body == "Document upload Pending")
                   {response = "doc pending"}
+                else if (value.body == "Invalid Email or Password")
+                  {response = "failure"}
                 else
                   {
                     result = ResponseModel.fromJson(json.decode(value.body)),
                     if (result.email == email)
                       {
-                        print(result.email),
                         response = "success",
                         Autologin.setLogin(result),
                       }
@@ -84,12 +84,9 @@ class Auth {
               headers: {"Content-Type": "application/json"},
               body: json.encode(data))
           .then((value) => {
-                print(value.statusCode),
-                print(value.body),
                 if (value.statusCode == 200)
                   {
                     res = SignupResponse.fromJson(json.decode(value.body)),
-                    print(res.message),
                     if (res.message == "Registration Successful!")
                       {
                         result = "Registration Successful!",
@@ -140,7 +137,7 @@ class Auth {
     var formData = mio.FormData.fromMap({
       'pan_front': await mio.MultipartFile.fromFile(panFront.path,
           filename: panFront.path),
-      'pan_back': await mio.MultipartFile.fromFile(panBack.path,
+      'profile_pic': await mio.MultipartFile.fromFile(panBack.path,
           filename: panBack.path),
       'aadhar_front': await mio.MultipartFile.fromFile(aadharFront.path,
           filename: aadharFront.path),
@@ -159,21 +156,22 @@ class Auth {
                     if (res.message == "Document Uploaded Successfully!")
                       {
                         result = "Document Uploaded Successfully!",
-                        print(result),
                       }
                     else
-                      {result = res.message.toString(), print(result)},
+                      {
+                        result = res.message.toString(),
+                      },
                   }
               });
     } catch (e) {
       result = "Error";
-      print(e.toString());
     }
     var update = updatedoc(
-        res.aadharBack.toString(),
-        res.aadharFront.toString(),
-        res.panBack.toString(),
-        res.panFront.toString());
+      res.panFront.toString(),
+      res.profilePic.toString(),
+      res.aadharFront.toString(),
+      res.aadharBack.toString(),
+    );
     if (update == "Updated") {
       result = "Document Uploaded Successfully!";
     } else {
@@ -184,19 +182,19 @@ class Auth {
 
   static Future<String> updatedoc(
     String panFront,
-    String panBack,
+    String profilepic,
     String aadharFront,
     String aadharBack,
   ) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String result = "";
-    print("object ");
+
     var id = prefs.getString('emailsignup');
     var uri = Uri.parse(con.uploadDocumentDetails);
     var data = {
       "email": id,
       "pan_front": panFront,
-      "pan_back": panBack,
+      "profile_pic": profilepic,
       "aadhar_front": aadharFront,
       "aadhar_back": aadharBack,
     };
@@ -211,7 +209,6 @@ class Auth {
           else
             {
               result = "Error",
-              print(result),
             },
         });
 

@@ -3,8 +3,10 @@
 import 'package:exhibition/Model/response.dart';
 import 'package:exhibition/Services/Productapi.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+import '../../Controller/usercontroller.dart';
 import '../../Model/ProductStockModel.dart';
 import '../../Utils/Widget.dart';
 import '../Auth/AutoLogin.dart';
@@ -18,6 +20,8 @@ class Dashboard extends StatefulWidget {
 
 class _DashboardState extends State<Dashboard> {
   ResponseModel user = ResponseModel();
+  var user1 = Get.put(UserController());
+
   bool _isLoading = false;
   var _productout = "N/A";
   var _productin = "N/A";

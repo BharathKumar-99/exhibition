@@ -16,5 +16,8 @@ class con {
   static const String getyearsales = "$_host/api//getyearbar";
 
   static const String getproduct = "$_host/product/getproduct";
-  static const String sellproduct = "$_host/product/sellproduct";
+  static const String sellproduct = "$_host/sell/sellproduct";
+
+  static const String getvenderorders = "$_host/venders/getvendersorders";
+  static const String sendcomplaints = "$_host/complaints/sendcomplaint";
 }
