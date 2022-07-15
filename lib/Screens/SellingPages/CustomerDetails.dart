@@ -5,6 +5,7 @@ import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../../Controller/ShoppingController.dart';
+import 'Order_Placed.dart';
 
 class CustomerDetails extends StatefulWidget {
   const CustomerDetails({Key? key}) : super(key: key);
@@ -32,6 +33,7 @@ class _CustomerDetailsState extends State<CustomerDetails> {
         isloading = false;
         if (val == "Mailsent") {
           isloading = false;
+          Get.to(() => const Orderplaced());
         } else {
           Get.snackbar(
             "Error ",
